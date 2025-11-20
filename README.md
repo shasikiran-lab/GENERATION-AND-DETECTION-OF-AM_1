@@ -1,6 +1,6 @@
 # GENERATION-AND-DETECTION-OF-AM_1
 ## AIM:
-To generate and detect the amplitude modulation and demodulation u s i n g S C I L A B and to calculate modulation index of AM.
+To generate and detect the amplitude modulation and demodulation using S C I L A B and to calculate modulation index of AM.
 
 ## EQUIPMENTS REQUIRED
 
@@ -25,7 +25,9 @@ Need for modulation is as follows:
 
 •	Ease of radiation.
 
-Amplitude Modulation is the process of changing the amplitude of a relatively high frequency carrier signal in proportion with the instantaneous value of the modulating signal. The output waveform contains all the frequencies that make up the AM signal and is used to transport the information through the system. Therefore the shape of the modulated wave is called the AM envelope. With no modulating signal the output waveform is simply the carrier signal. Coefficient of modulation is a term used to describe the amount of amplitude change present in an AM waveform. There are three degrees of modulation available based on value of modulation index.
+Amplitude Modulation is the process of changing the amplitude of a relatively high frequency carrier signal in proportion with the instantaneous value of the modulating signal. The output waveform contains all the frequencies that make up the AM signal and is used to transport the information through the system. Therefore the shape of the modulated wave is called the AM envelope. With no modulating signal the output waveform is simply the carrier signal. Coefficient of modulation is a term used to describe the amount of amplitude change present in an AM waveform. 
+
+There are three degrees of modulation available based on value of modulation index.
 
 1)	Under modulation :	m<1, Em < Ec
 	
@@ -83,13 +85,69 @@ Note: Keep all the switch faults in off position
 <img width="600" height="800" alt="image" src="https://github.com/user-attachments/assets/7bc77926-9c2a-42c6-994b-6c67433b11d2" />
 
 ## PROGRAM:
+
+		am = 8.8;
+		fm = 863;
+		fs = 863000;
+		pi = %pi;
+		t = 0:1/fs:2/fm;
+		m = am * cos(2 * pi * fm * t);
+		ac = 17.6;
+		fc = 8630;
+		c = cos(2 * pi * fc * t);
+		modulated = (ac + m) .* c;
+		
+		demod_raw = modulated .* c;
+		N = length(demod_raw);
+		M = fft(demod_raw);
+		f = (0:N-1)*(fs/N);
+		
+		cutoff = 2 * fm;
+		H = (f < cutoff);
+		M_filtered = M .* H;
+		demodulated = real(ifft(M_filtered));
+		
+		avg = sum(demodulated) / length(demodulated);
+		demodulated = demodulated - avg;
+		demodulated = demodulated / max(abs(demodulated));
+		demodulated = demodulated * max(abs(m));
+		
+		subplot(4,1,1);
+		plot(t, m);
+		title('Message Signal');
+		xlabel('Time (s)');
+		ylabel('Amplitude');
+		
+		subplot(4,1,2);
+		plot(t, c);
+		title('Carrier Signal');
+		xlabel('Time (s)');
+		ylabel('Amplitude');
+		
+		subplot(4,1,3);
+		plot(t, modulated);
+		title('AM Modulated Signal');
+		xlabel('Time (s)');
+		ylabel('Amplitude');
+		
+		subplot(4,1,4);
+		plot(t, demodulated);
+		title('Demodulated Signal');
+		xlabel('Time (s)');
+		ylabel('Amplitude');
+
+
  
 ## TABULATION:
+<img width="793" height="450" alt="image" src="https://github.com/user-attachments/assets/5f8d337d-68d2-4c09-93cf-5d04b9fa16ca" />
 
 ## CALCULATION:
-
-
+<img width="757" height="255" alt="image" src="https://github.com/user-attachments/assets/b9310fe6-c414-4430-9e1c-21ab3e091ae6" />
 
 ## OUTPUT:
+<img width="730" height="459" alt="image" src="https://github.com/user-attachments/assets/3c5859e2-f510-44fb-a0f1-69c3d6b7762a" />
+
 
 ## RESULT:
+Thus the amplitude modulation and demodulation is experimentally done and the output is verified.
+
